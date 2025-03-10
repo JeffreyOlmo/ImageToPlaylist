@@ -15,4 +15,4 @@ This application generates Spotify playlists based on uploaded images.
 
 ## Usage
 
-[Add usage instructions here]
+[Add usage instructions here]# ImageToPlaylist
