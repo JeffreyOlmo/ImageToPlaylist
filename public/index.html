@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aesthetic Playlist Generator</title>
+  <script src="https://sdk.scdn.co/spotify-player.js"></script>
+  <script src="script.js" defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #1DB954;
+      --secondary-color: #191414;
+      --text-color: #FFFFFF;
+      --background-color: #121212;
+      --card-color: #282828;
+      --hover-color: #1ED760;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 2rem;
+      text-align: center;
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+      font-weight: 700;
+    }
+    
+    h2 {
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+    }
+    
+    p {
+      margin-bottom: 1.5rem;
+      font-size: 1.1rem;
+    }
+    
+    button {
+      background-color: var(--primary-color);
+      color: var(--text-color);
+      border: none;
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Montserrat', sans-serif;
+      margin: 0.5rem;
+    }
+    
+    button:hover {
+      background-color: var(--hover-color);
+      transform: translateY(-2px);
+    }
+    
+    #login {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 80vh;
+    }
+    
+    #login-button {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 2rem;
+      font-size: 1.2rem;
+    }
+    
+    #upload {
+      text-align: center;
+      padding: 2rem;
+      border-radius: 10px;
+      background-color: var(--card-color);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+      margin-bottom: 2rem;
+    }
+    
+    #image-preview {
+      max-width: 100%;
+      max-height: 300px;
+      margin: 1rem 0;
+      border-radius: 8px;
+      display: none;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .file-input-container {
+      position: relative;
+      margin: 1.5rem 0;
+    }
+    
+    #image-input {
+      opacity: 0;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+    
+    .file-input-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background-color: var(--secondary-color);
+      color: var(--text-color);
+      padding: 1rem 2rem;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+    
+    .file-input-label:hover {
+      background-color: #333;
+    }
+    
+    #playlist {
+      width: 100%;
+      padding: 2rem;
+      border-radius: 10px;
+      background-color: var(--card-color);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    }
+    
+    #track-list {
+      list-style: none;
+      margin: 1.5rem 0;
+      text-align: left;
+    }
+    
+    .track-item {
+      display: flex;
+      align-items: center;
+      padding: 1rem;
+      margin-bottom: 0.5rem;
+      border-radius: 8px;
+      background-color: rgba(255, 255, 255, 0.05);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .track-item:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .track-item.playing {
+      background-color: rgba(29, 185, 84, 0.2);
+      border-left: 4px solid var(--primary-color);
+    }
+    
+    .track-number {
+      width: 30px;
+      font-weight: 600;
+      color: #aaa;
+    }
+    
+    .track-info {
+      flex: 1;
+    }
+    
+    .track-name {
+      font-weight: 600;
+      margin-bottom: 0.2rem;
+    }
+    
+    .track-artist {
+      font-size: 0.9rem;
+      color: #aaa;
+    }
+    
+    .track-controls {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .play-button {
+      background: none;
+      border: none;
+      color: var(--text-color);
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+    }
+    
+    .play-button:hover {
+      color: var(--primary-color);
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    #player-container {
+      margin-top: 2rem;
+      padding: 1rem;
+      border-radius: 8px;
+      background-color: rgba(0, 0, 0, 0.3);
+    }
+    
+    #now-playing {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    
+    #player-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+    }
+    
+    .control-button {
+      background: none;
+      border: none;
+      color: var(--text-color);
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+    }
+    
+    .control-button:hover {
+      color: var(--primary-color);
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    #play-pause-button {
+      font-size: 2rem;
+    }
+    
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100px;
+    }
+    
+    .loading-spinner {
+      border: 4px solid rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      border-top: 4px solid var(--primary-color);
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .hidden {
+      display: none !important;
+    }
+    
+    @media (max-width: 768px) {
+      body {
+        padding: 1rem;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+      
+      h2 {
+        font-size: 1.5rem;
+      }
+      
+      .container {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="login">
+      <h1>Aesthetic Playlist Generator</h1>
+      <p>Upload an image and we'll create a Spotify playlist that matches its aesthetic.</p>
+      <button id="login-button"><i class="fab fa-spotify"></i> Login with Spotify</button>
+    </div>
+    
+    <div id="upload" class="hidden">
+      <h1>Upload an Image</h1>
+      <p>Choose an image that represents the mood or aesthetic you want for your playlist.</p>
+      
+      <div class="file-input-container">
+        <label for="image-input" class="file-input-label">
+          <i class="fas fa-image"></i> Choose Image
+        </label>
+        <input type="file" id="image-input" accept="image/*">
+      </div>
+      
+      <img id="image-preview" alt="Image preview">
+      
+      <div id="generate-container">
+        <button id="generate-button" disabled>
+          <i class="fas fa-magic"></i> Generate Playlist
+        </button>
+      </div>
+      
+      <div id="loading" class="loading hidden">
+        <div class="loading-spinner"></div>
+        <p>Creating your playlist...</p>
+      </div>
+    </div>
+    
+    <div id="playlist" class="hidden">
+      <h2>Your Aesthetic Playlist</h2>
+      <ul id="track-list"></ul>
+      
+      <div id="player-container" class="hidden">
+        <div id="now-playing">
+          <div>
+            <div id="current-track-name">No track selected</div>
+            <div id="current-track-artist"></div>
+          </div>
+        </div>
+        
+        <div id="player-controls">
+          <button id="previous-button" class="control-button">
+            <i class="fas fa-step-backward"></i>
+          </button>
+          <button id="play-pause-button" class="control-button">
+            <i class="fas fa-play"></i>
+          </button>
+          <button id="next-button" class="control-button">
+            <i class="fas fa-step-forward"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
